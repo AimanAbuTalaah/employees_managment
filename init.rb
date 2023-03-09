@@ -1,8 +1,44 @@
 #!/usr/bin/env ruby
-require_relative('Employees')
 require('date')
 
-Employees.create({
+
+$employees = []
+
+def create(emp)
+  if $employees.any? { |employee| employee[:emp_id] == emp[:emp_id] }
+    nil
+  else
+    $employees.push(emp)
+  end
+end
+
+def update(id, data)
+  $employees.map! do |employee|
+    if employee[:emp_id] == id
+      {
+        emp_id: employee[:emp_id],
+        name: data[:name] || employee[:name],
+        joining_date: data[:joining_date] || employee[:joining_date],
+        department: data[:department] || employee[:department],
+        salary: data[:salary] || employee[:salary]
+      }
+    else
+      employee
+    end
+  end
+end
+
+def delete(id)
+  $employees.select! do |employee|
+    employee[:emp_id] != id
+  end
+end
+
+def search_by_id(id)
+  $employees.find { |employee| employee[:emp_id] == id}
+end
+
+create({
   emp_id: 1,
   name: 'Ahmed',
   joining_date: Date.new(2018,11,1),
@@ -11,7 +47,7 @@ Employees.create({
 }
 )
 
-Employees.create({
+create({
   emp_id: 2,
   name: 'Khaled',
   joining_date: Date.new(2018,11,1),
@@ -20,7 +56,7 @@ Employees.create({
 }
 )
 
-Employees.create({
+create({
   emp_id: 3,
   name: 'Omar',
   joining_date: Date.new(2018,11,1),
@@ -29,7 +65,7 @@ Employees.create({
 }
 )
 
-Employees.update(1, {
+update(1, {
   emp_id: 3,
   name: 'Ad',
   joining_date: Date.new(2019,11,1),
@@ -38,6 +74,6 @@ Employees.update(1, {
 }
 )
 
-Employees.delete(2)
+delete(2)
 
-puts Employees.employees
+puts $employees
