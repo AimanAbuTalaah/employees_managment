@@ -38,6 +38,10 @@ def search_by_id(id)
   $employees.find { |employee| employee[:emp_id] == id}
 end
 
+def search_by_name(name)
+  $employees.select { |employee| employee[:name].match(Regexp.new name) }
+end
+
 create({
   emp_id: 1,
   name: 'Ahmed',
